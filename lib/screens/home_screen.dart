@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:weatherz/bloc/weather_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final TextEditingController _searchEditingControler = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,28 @@ class HomeScreen extends StatelessWidget {
         excludeHeaderSemantics: true,
         elevation: 0,
         systemOverlayStyle: const SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
+        actions: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            child: TextField(
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: 'Search city',
+                hintStyle: const TextStyle(color: Colors.white54),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              onChanged: (value) {
+                if (value.isNotEmpty) {
+                  BlocProvider.of<WeatherBloc>(context).add(FetchWeatherByCity(cityNme: value));
+                }
+              },
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(40, 1.2 * kToolbarHeight, 40, 20),
@@ -71,191 +95,194 @@ class HomeScreen extends StatelessWidget {
                     return SizedBox(
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "📍 ${state.weather.areaName}",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            "Good Morning",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          getWeather(state.weather.weatherConditionCode!),
-                          Center(
-                            child: Text(
-                              '${state.weather.temperature!.celsius?.round()}°C',
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 40),
+                            Text(
+                              "📍 ${state.weather.areaName}",
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 45,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          Center(
-                            child: Text(
-                              state.weather.weatherMain!.toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          Center(
-                            child: Text(
-                              DateFormat('EEEE dd . ').add_jm().format(state.weather.date!),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
                                 fontWeight: FontWeight.w300,
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 40),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Image.asset(
-                                    "assets/11.png",
-                                    scale: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    spacing: 3,
-                                    children: [
-                                      const Text(
-                                        "Sunrise",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        DateFormat('').add_jm().format(state.weather.sunrise!),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                            const SizedBox(height: 8),
+                            const Text(
+                              "Good Morning",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
                               ),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Image.asset(
-                                    "assets/12.png",
-                                    scale: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    spacing: 3,
-                                    children: [
-                                      const Text(
-                                        "Sunrise",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        DateFormat('').add_jm().format(state.weather.sunset!),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 5.0),
-                            child: Divider(
-                              color: Colors.grey,
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Image.asset(
-                                    "assets/13.png",
-                                    scale: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    spacing: 3,
-                                    children: [
-                                      const Text(
-                                        "Temp. Max",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        '${state.weather.tempMax!.celsius?.round()}°C',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                            getWeather(state.weather.weatherConditionCode!),
+                            Center(
+                              child: Text(
+                                '${state.weather.temperature!.celsius?.round()}°C',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 45,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Image.asset(
-                                    "assets/14.png",
-                                    scale: 8,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    spacing: 3,
-                                    children: [
-                                      const Text(
-                                        "Temp. Min",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w400,
+                            ),
+                            Center(
+                              child: Text(
+                                state.weather.weatherMain!.toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Center(
+                              child: Text(
+                                DateFormat('EEEE dd . ').add_jm().format(state.weather.date!),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  spacing: 5,
+                                  children: [
+                                    Image.asset(
+                                      "assets/11.png",
+                                      scale: 8,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 3,
+                                      children: [
+                                        const Text(
+                                          "Sunrise",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        '${state.weather.tempMin!.celsius?.round()}°C',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w700,
+                                        Text(
+                                          DateFormat('').add_jm().format(state.weather.sunrise!),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          )
-                        ],
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  spacing: 5,
+                                  children: [
+                                    Image.asset(
+                                      "assets/12.png",
+                                      scale: 8,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 3,
+                                      children: [
+                                        const Text(
+                                          "Sunrise",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          DateFormat('').add_jm().format(state.weather.sunset!),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  spacing: 5,
+                                  children: [
+                                    Image.asset(
+                                      "assets/13.png",
+                                      scale: 8,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 3,
+                                      children: [
+                                        const Text(
+                                          "Temp. Max",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${state.weather.tempMax!.celsius?.round()}°C',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  spacing: 5,
+                                  children: [
+                                    Image.asset(
+                                      "assets/14.png",
+                                      scale: 8,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 3,
+                                      children: [
+                                        const Text(
+                                          "Temp. Min",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${state.weather.tempMin!.celsius?.round()}°C',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     );
                   } else {

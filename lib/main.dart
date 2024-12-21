@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
                 ..add(
                   FetchWeather(snap.data as Position),
                 ),
-              child: const HomeScreen(),
+              child: HomeScreen(),
             );
           } else {
             return const Scaffold(
